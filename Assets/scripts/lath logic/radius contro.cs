@@ -2,80 +2,97 @@ using UnityEngine;
 
 public class RadiusControl : MonoBehaviour
 {
-    public Vector3 maxVertex;
-    GameObject tool;
+    public GameObject innerCylinder;
+    private GameObject tool1, tool2, tool3;
 
-    //private float initialRadius = 1.0f; // Initial radius of the cylinder
-    public float scaleStep = 0.99f; // scale adjustment step
-    private bool meshesIntersecting = false;
-    private Vector3 originalScale;
+    public float turnStep = 0.99f;    // Cutting from outside (scale down)
+    public float drillStep = 0.01f;   // Drilling - increase hole diameter (X,Z of inner)
+    public float boreStep = 0.01f;    // Boring - increase hole diameter (X,Z of inner)
 
+    private Vector3 originalOuterScale;
 
     void Start()
     {
-        tool = GameObject.Find("Lathe Machine - tool-1"); // Reference to the tool GameObject
-                                                          // Store the original scale of the cylinder
-        originalScale = transform.localScale;
+        tool1 = GameObject.Find("Lathe Machine - tool-1");
+        tool2 = GameObject.Find("Lathe Machine - tool-2");
+        tool3 = GameObject.Find("Lathe Machine - tool-3");
+
+        originalOuterScale = transform.localScale;
     }
 
     void Update()
     {
+        if (IsIntersecting(tool1))
+            PerformTurning();
 
-        //GetMaxZVertex();
+        if (IsIntersecting(tool2))
+            PerformDrilling();
 
-        //Debug.Log("tool is at " + tool.transform.position);
-        //Debug.Log("Cylinder is at " + cylinderObject.transform.position);
+        if (IsIntersecting(tool3))
+            PerformBoring();
+    }
 
-        // Check if the Z-coordinates of the tool and the cylinder are equal
-        if (isIntersecting())
+    void PerformTurning()
+    {
+        transform.localScale = new Vector3(transform.localScale.x * turnStep, originalOuterScale.y, transform.localScale.z * turnStep);
+    }
+
+    void PerformDrilling()
+    {
+        Vector3 scale = innerCylinder.transform.localScale;
+
+        float maxDiameter = transform.localScale.x * 0.225f; // leave small margin
+
+        if (scale.x + drillStep < maxDiameter && scale.z + drillStep < maxDiameter)
         {
-            UpdateCylinderScale();
+            innerCylinder.transform.localScale = new Vector3(scale.x + drillStep, scale.y, scale.z + drillStep);
         }
     }
 
+    void PerformBoring()
+{
+    if (tool3 == null || innerCylinder == null) return;
 
+    MeshCollider outerMesh = GetComponent<MeshCollider>();
+    MeshCollider toolMesh = tool3.GetComponent<MeshCollider>();
 
-    void UpdateCylinderScale()
+    if (outerMesh == null || toolMesh == null) return;
+
+    Vector3 direction;
+    float distance;
+
+    if (Physics.ComputePenetration(
+        outerMesh, transform.position, transform.rotation,
+        toolMesh, tool3.transform.position, tool3.transform.rotation,
+        out direction, out distance))
     {
-        // Update the cylinder scale
-        //Debug.Log("UPDATING");
-        transform.localScale = new Vector3(transform.localScale.x * scaleStep, originalScale.y, transform.localScale.z * scaleStep);
+        // Estimate target diameter based on penetration depth
+        float estimatedRadius = distance * 5f; // tweak this multiplier
+        float maxRadius = transform.localScale.x * 0.5f * 0.95f;
+
+        estimatedRadius = Mathf.Min(estimatedRadius, maxRadius);
+        estimatedRadius = Mathf.Max(estimatedRadius, 0.01f); // prevent zero
+
+        innerCylinder.transform.localScale = new Vector3(estimatedRadius * 2, innerCylinder.transform.localScale.y, estimatedRadius * 2);
     }
+}
 
 
-    bool isIntersecting()
+    bool IsIntersecting(GameObject tool)
     {
-        GameObject otherObject = GameObject.Find("Lathe Machine - tool-1"); // Replace with the actual GameObject name
+        if (tool == null) return false;
 
-        if (otherObject != null)
+        MeshCollider mesh1 = GetComponent<MeshCollider>();
+        MeshCollider mesh2 = tool.GetComponent<MeshCollider>();
+
+        if (mesh1 != null && mesh2 != null)
         {
-            
-            // Get the MeshColliders of both GameObjects
-            MeshCollider meshCollider1 = GetComponent<MeshCollider>();
-            MeshCollider meshCollider2 = otherObject.GetComponent<MeshCollider>();
-
-            if (meshCollider1 != null && meshCollider2 != null)
-            {
-                // Check for overlapping colliders
-                Vector3 direction;
-                float distance;
-                meshesIntersecting = Physics.ComputePenetration(
-                    meshCollider1, meshCollider1.transform.position, meshCollider1.transform.rotation,
-                    meshCollider2, meshCollider2.transform.position, meshCollider2.transform.rotation,
-                    out direction, out distance);
-
-                if (meshesIntersecting)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-
-                }
-            }
-            else return false;
+            return Physics.ComputePenetration(
+                mesh1, transform.position, transform.rotation,
+                mesh2, tool.transform.position, tool.transform.rotation,
+                out _, out _
+            );
         }
-        else return false;
+        return false;
     }
 }
