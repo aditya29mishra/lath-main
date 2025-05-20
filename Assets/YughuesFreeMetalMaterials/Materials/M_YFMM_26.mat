@@ -41,6 +41,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _GlossMapScale: 0.65
+    - _Metallic: 1
     m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &510152125770479486

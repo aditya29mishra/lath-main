@@ -4,6 +4,8 @@ public class RadiusControl : MonoBehaviour
 {
     public GameObject innerCylinder;
     private GameObject tool1, tool2, tool3;
+    public GameObject tool1Audio;
+    private AudioSource audioClip;
 
     public float turnStep = 0.99f;    // Cutting from outside (scale down)
     public float drillStep = 0.01f;   // Drilling - increase hole diameter (X,Z of inner)
@@ -17,20 +19,41 @@ public class RadiusControl : MonoBehaviour
         tool2 = GameObject.Find("Lathe Machine - tool-2");
         tool3 = GameObject.Find("Lathe Machine - tool-3");
 
+        tool1Audio = GameObject.Find("Tool1Audio"); // Assign here
+        if (tool1Audio != null)
+        {
+            tool1Audio.SetActive(true); // Initially set to inactive
+        }
+        audioClip = tool1Audio.GetComponent<AudioSource>();
         originalOuterScale = transform.localScale;
     }
 
-    void Update()
+   void Update()
+{
+    bool isTool1Intersecting = IsIntersecting(tool1);
+    bool isTool2Intersecting = IsIntersecting(tool2);
+    bool isTool3Intersecting = IsIntersecting(tool3);
+
+    if (isTool1Intersecting)
     {
-        if (IsIntersecting(tool1))
-            PerformTurning();
-
-        if (IsIntersecting(tool2))
-            PerformDrilling();
-
-        if (IsIntersecting(tool3))
-            PerformBoring();
+        PerformTurning();
+            audioClip.Play();    
     }
+    else
+    {
+        audioClip.Stop();
+    }
+    if (isTool2Intersecting)
+    {
+        PerformDrilling();    
+    }
+
+    if (isTool3Intersecting)
+    {
+        PerformBoring(); 
+    }
+}
+
 
     void PerformTurning()
     {
