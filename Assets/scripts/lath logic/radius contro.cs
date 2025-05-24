@@ -37,11 +37,11 @@ public class RadiusControl : MonoBehaviour
     if (isTool1Intersecting)
     {
         PerformTurning();
-            audioClip.Play();    
+        audioClip.enabled = true; // Enable audio 
     }
     else
     {
-        audioClip.Stop();
+        audioClip.enabled = false; // Disable audio when not intersecting
     }
     if (isTool2Intersecting)
     {
@@ -64,7 +64,7 @@ public class RadiusControl : MonoBehaviour
     {
         Vector3 scale = innerCylinder.transform.localScale;
 
-        float maxDiameter = transform.localScale.x * 0.225f; // leave small margin
+        float maxDiameter = transform.localScale.x * 0.3f; // leave small margin
 
         if (scale.x + drillStep < maxDiameter && scale.z + drillStep < maxDiameter)
         {
