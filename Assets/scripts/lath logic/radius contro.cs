@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class RadiusControl : MonoBehaviour
 {
@@ -7,11 +8,13 @@ public class RadiusControl : MonoBehaviour
     public GameObject tool1Audio;
     private AudioSource audioClip;
 
-    public float turnStep = 0.99f;    // Cutting from outside (scale down)
-    public float drillStep = 0.01f;   // Drilling - increase hole diameter (X,Z of inner)
-    public float boreStep = 0.01f;    // Boring - increase hole diameter (X,Z of inner)
+    public float turnStep = 0.99f;
+    public float drillStep = 0.01f;
+    public float boreStep = 0.01f;
 
     private Vector3 originalOuterScale;
+
+    private Coroutine audioCoroutine;
 
     void Start()
     {
@@ -19,41 +22,51 @@ public class RadiusControl : MonoBehaviour
         tool2 = GameObject.Find("Lathe Machine - tool-2");
         tool3 = GameObject.Find("Lathe Machine - tool-3");
 
-        tool1Audio = GameObject.Find("Tool1Audio"); // Assign here
+        tool1Audio = GameObject.Find("Tool1Audio");
         if (tool1Audio != null)
         {
-            tool1Audio.SetActive(true); // Initially set to inactive
+            tool1Audio.SetActive(true);
         }
+
         audioClip = tool1Audio.GetComponent<AudioSource>();
         originalOuterScale = transform.localScale;
     }
 
-   void Update()
-{
-    bool isTool1Intersecting = IsIntersecting(tool1);
-    bool isTool2Intersecting = IsIntersecting(tool2);
-    bool isTool3Intersecting = IsIntersecting(tool3);
+    void Update()
+    {
+        bool isTool1Intersecting = IsIntersecting(tool1);
+        bool isTool2Intersecting = IsIntersecting(tool2);
+        bool isTool3Intersecting = IsIntersecting(tool3);
 
-    if (isTool1Intersecting)
-    {
-        PerformTurning();
-        audioClip.enabled = true; // Enable audio 
-    }
-    else
-    {
-        audioClip.enabled = false; // Disable audio when not intersecting
-    }
-    if (isTool2Intersecting)
-    {
-        PerformDrilling();    
+        if (isTool1Intersecting)
+        {
+            PerformTurning();
+
+            if (audioCoroutine != null)
+                StopCoroutine(audioCoroutine);
+
+            audioCoroutine = StartCoroutine(EnableAudioForOneFrame());
+        }
+
+        if (isTool2Intersecting)
+        {
+            PerformDrilling();
+        }
+
+        if (isTool3Intersecting)
+        {
+            PerformBoring();
+        }
     }
 
-    if (isTool3Intersecting)
+    IEnumerator EnableAudioForOneFrame()
     {
-        PerformBoring(); 
+        audioClip.enabled = true;
+        yield return null; // Wait for one frame
+        yield return null;
+        yield return null;
+        audioClip.enabled = false;
     }
-}
-
 
     void PerformTurning()
     {
@@ -63,8 +76,7 @@ public class RadiusControl : MonoBehaviour
     void PerformDrilling()
     {
         Vector3 scale = innerCylinder.transform.localScale;
-
-        float maxDiameter = transform.localScale.x * 0.3f; // leave small margin
+        float maxDiameter = transform.localScale.x * 0.3f;
 
         if (scale.x + drillStep < maxDiameter && scale.z + drillStep < maxDiameter)
         {
@@ -73,33 +85,30 @@ public class RadiusControl : MonoBehaviour
     }
 
     void PerformBoring()
-{
-    if (tool3 == null || innerCylinder == null) return;
-
-    MeshCollider outerMesh = GetComponent<MeshCollider>();
-    MeshCollider toolMesh = tool3.GetComponent<MeshCollider>();
-
-    if (outerMesh == null || toolMesh == null) return;
-
-    Vector3 direction;
-    float distance;
-
-    if (Physics.ComputePenetration(
-        outerMesh, transform.position, transform.rotation,
-        toolMesh, tool3.transform.position, tool3.transform.rotation,
-        out direction, out distance))
     {
-        // Estimate target diameter based on penetration depth
-        float estimatedRadius = distance * 5f; // tweak this multiplier
-        float maxRadius = transform.localScale.x * 0.5f * 0.95f;
+        if (tool3 == null || innerCylinder == null) return;
 
-        estimatedRadius = Mathf.Min(estimatedRadius, maxRadius);
-        estimatedRadius = Mathf.Max(estimatedRadius, 0.01f); // prevent zero
+        MeshCollider outerMesh = GetComponent<MeshCollider>();
+        MeshCollider toolMesh = tool3.GetComponent<MeshCollider>();
 
-        innerCylinder.transform.localScale = new Vector3(estimatedRadius * 2, innerCylinder.transform.localScale.y, estimatedRadius * 2);
+        if (outerMesh == null || toolMesh == null) return;
+
+        Vector3 direction;
+        float distance;
+
+        if (Physics.ComputePenetration(
+            outerMesh, transform.position, transform.rotation,
+            toolMesh, tool3.transform.position, tool3.transform.rotation,
+            out direction, out distance))
+        {
+            float estimatedRadius = distance * 5f;
+            float maxRadius = transform.localScale.x * 0.5f * 0.95f;
+
+            estimatedRadius = Mathf.Clamp(estimatedRadius, 0.01f, maxRadius);
+
+            innerCylinder.transform.localScale = new Vector3(estimatedRadius * 2, innerCylinder.transform.localScale.y, estimatedRadius * 2);
+        }
     }
-}
-
 
     bool IsIntersecting(GameObject tool)
     {
