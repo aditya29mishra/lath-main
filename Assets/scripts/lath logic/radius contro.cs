@@ -16,6 +16,11 @@ public class RadiusControl : MonoBehaviour
 
     private Coroutine audioCoroutine;
 
+    private bool isTurning = false;
+    public float turningDelay = 0.2f; // Adjust delay in seconds
+    public float audioDelay = 1f; // Adjust audio delay in seconds
+
+
     void Start()
     {
         tool1 = GameObject.Find("Lathe Machine - tool-1");
@@ -40,12 +45,11 @@ public class RadiusControl : MonoBehaviour
 
         if (isTool1Intersecting)
         {
-            PerformTurning();
+            if (audioClip != null && !audioClip.isPlaying)
+                StartCoroutine(EnableAudioForOneFrame());
 
-            if (audioCoroutine != null)
-                StopCoroutine(audioCoroutine);
-
-            audioCoroutine = StartCoroutine(EnableAudioForOneFrame());
+            if (!isTurning)
+                StartCoroutine(DelayedTurning());
         }
 
         if (isTool2Intersecting)
@@ -62,11 +66,24 @@ public class RadiusControl : MonoBehaviour
     IEnumerator EnableAudioForOneFrame()
     {
         audioClip.enabled = true;
-        yield return null; // Wait for one frame
-        yield return null;
-        yield return null;
+        yield return new WaitForSeconds(audioDelay);
         audioClip.enabled = false;
     }
+
+    IEnumerator DelayedTurning()
+    {
+        isTurning = true;
+        yield return new WaitForSeconds(turningDelay);
+
+        // Re-check tool contact before turning
+        if (IsIntersecting(tool1))
+        {
+            PerformTurning();
+        }
+
+        isTurning = false;
+    }
+
 
     void PerformTurning()
     {
