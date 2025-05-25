@@ -7078,10 +7078,34 @@ MonoBehaviour:
   m_MinAngle: -50
   m_OnLeverActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286749860}
+        m_TargetAssemblyTypeName: RottorRotation, Assembly-CSharp
+        m_MethodName: SetRotationDirection
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnLeverDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286749860}
+        m_TargetAssemblyTypeName: RottorRotation, Assembly-CSharp
+        m_MethodName: SetRotationDirection
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!4 &825825301
 Transform:
   m_ObjectHideFlags: 0
@@ -10599,11 +10623,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1286749858}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3fc9f6ce66597d48a3301d9ea3f77c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 708d51425adafcd4896cbf506761db98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotationAxis: {x: 0, y: 0, z: 1}
-  rotationSpeed: 3000
+  slowSpeed: 3000
+  fastSpeed: 45000
+  useFastSpeed: 0
+  clockwiseRotation: 1
 --- !u!1 &1298542349
 GameObject:
   m_ObjectHideFlags: 0
@@ -15238,10 +15265,34 @@ MonoBehaviour:
   m_MinAngle: -50
   m_OnLeverActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286749860}
+        m_TargetAssemblyTypeName: RottorRotation, Assembly-CSharp
+        m_MethodName: SetSpeedMode
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnLeverDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286749860}
+        m_TargetAssemblyTypeName: RottorRotation, Assembly-CSharp
+        m_MethodName: SetSpeedMode
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!4 &1822422610
 Transform:
   m_ObjectHideFlags: 0
@@ -28167,7 +28218,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1286749860}
-        m_TargetAssemblyTypeName: LeverControlledRotation, Assembly-CSharp
+        m_TargetAssemblyTypeName: RottorRotation, Assembly-CSharp
         m_MethodName: StopRotation
         m_Mode: 1
         m_Arguments:
@@ -28267,7 +28318,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1286749860}
-        m_TargetAssemblyTypeName: LeverControlledRotation, Assembly-CSharp
+        m_TargetAssemblyTypeName: RottorRotation, Assembly-CSharp
         m_MethodName: StartRotation
         m_Mode: 1
         m_Arguments:
@@ -40446,6 +40497,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 2100000, guid: 9293d0b445ce6e546b9af9e325beb57f,
             type: 2}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Material, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1286749860}
+        m_TargetAssemblyTypeName: RottorRotation, Assembly-CSharp
+        m_MethodName: StopRotation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -61305,6 +61368,7 @@ GameObject:
   - component: {fileID: 6484181050902861886}
   - component: {fileID: 4571770875993802645}
   - component: {fileID: 6842158347940969159}
+  - component: {fileID: 8524342663355184507}
   m_Layer: 0
   m_Name: polySurface259
   m_TagString: Untagged
@@ -61312,6 +61376,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8524342663355184507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8524342663355184506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3fc9f6ce66597d48a3301d9ea3f77c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationAxis: {x: 0, y: 0, z: 1}
+  rotationSpeed: 300
 --- !u!1 &8533249120121326180
 GameObject:
   m_ObjectHideFlags: 0
@@ -61399,7 +61477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationAxis: {x: 0, y: 1, z: 0}
-  rotationSpeed: 3000
+  rotationSpeed: 300
 --- !u!1 &8539038609679163437
 GameObject:
   m_ObjectHideFlags: 0
