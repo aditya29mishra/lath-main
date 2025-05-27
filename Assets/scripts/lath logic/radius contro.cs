@@ -88,6 +88,21 @@ public class RadiusControl : MonoBehaviour
     void PerformTurning()
     {
         transform.localScale = new Vector3(transform.localScale.x * turnStep, originalOuterScale.y, transform.localScale.z * turnStep);
+        StartCoroutine(SpawnEffectRepeatedly());
+    }
+
+    IEnumerator SpawnEffectRepeatedly()
+    {
+        GameObject effect = GameObject.Find("effect");
+
+        if (effect != null)
+        {
+            for (int i = 0; i < 5; i++) // Adjust the number of duplicates as needed
+            {
+                Instantiate(effect, transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
     }
 
     void PerformDrilling()
