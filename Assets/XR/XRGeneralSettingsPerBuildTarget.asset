@@ -1,6 +1,10 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+<<<<<<< HEAD
 --- !u!114 &-6630957066081646230
+=======
+--- !u!114 &-5843147995837505517
+>>>>>>> 10951405dd04f4c343314f108d61f222cbf10a8f
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,6 +13,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
+<<<<<<< HEAD
   m_Script: {fileID: 11500000, guid: f4c3631f5e58749a59194e0cf6baf6d5, type: 3}
   m_Name: Android Providers
   m_EditorClassIdentifier: 
@@ -17,6 +22,13 @@ MonoBehaviour:
   m_AutomaticRunning: 0
   m_Loaders:
   - {fileID: 11400000, guid: 2b190286844210a4bb82e9acd09b6254, type: 2}
+=======
+  m_Script: {fileID: 11500000, guid: d236b7d11115f2143951f1e14045df39, type: 3}
+  m_Name: Android Settings
+  m_EditorClassIdentifier: 
+  m_LoaderManagerInstance: {fileID: -854139090326305950}
+  m_InitManagerOnStart: 1
+>>>>>>> 10951405dd04f4c343314f108d61f222cbf10a8f
 --- !u!114 &-4631532768783890227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,6 +46,22 @@ MonoBehaviour:
   m_AutomaticRunning: 0
   m_Loaders:
   - {fileID: 11400000, guid: 2b190286844210a4bb82e9acd09b6254, type: 2}
+--- !u!114 &-854139090326305950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4c3631f5e58749a59194e0cf6baf6d5, type: 3}
+  m_Name: Android Providers
+  m_EditorClassIdentifier: 
+  m_RequiresSettingsUpdate: 0
+  m_AutomaticLoading: 0
+  m_AutomaticRunning: 0
+  m_Loaders: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,7 +77,11 @@ MonoBehaviour:
   Keys: 0100000007000000
   Values:
   - {fileID: 6322169482016506137}
+<<<<<<< HEAD
   - {fileID: 8767235390624381504}
+=======
+  - {fileID: -5843147995837505517}
+>>>>>>> 10951405dd04f4c343314f108d61f222cbf10a8f
 --- !u!114 &6322169482016506137
 MonoBehaviour:
   m_ObjectHideFlags: 0
