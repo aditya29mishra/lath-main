@@ -95,15 +95,28 @@ public class RadiusControl : MonoBehaviour
     {
         GameObject effect = GameObject.Find("effect");
 
-        if (effect != null)
+        if (effect != null && effect.transform.childCount > 0)
         {
-            for (int i = 0; i < 5; i++) // Adjust the number of duplicates as needed
+            Transform childTransform = effect.transform.GetChild(0);
+            GameObject childEffect = childTransform.gameObject;
+
+            bool wasInitiallyInactive = !childEffect.activeSelf;
+            childEffect.SetActive(true); // Activate to allow instantiation
+
+            for (int i = 0; i < 1; i++) // Adjust number of duplicates
             {
-                Instantiate(effect, transform.position, Quaternion.identity);
+                GameObject spawned = Instantiate(childEffect, transform.position, Quaternion.identity);
+                spawned.transform.localScale = new Vector3(0.260006577f, 0.260006577f, 0.0660208687f);
                 yield return new WaitForSeconds(0.5f);
+            }
+
+            if (wasInitiallyInactive)
+            {
+                childEffect.SetActive(false); // Restore original state
             }
         }
     }
+
 
     void PerformDrilling()
     {

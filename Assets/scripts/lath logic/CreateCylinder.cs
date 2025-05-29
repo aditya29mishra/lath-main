@@ -9,6 +9,8 @@ public class CreateCylinder : MonoBehaviour
 
     private GameObject outerCylinder;
     private GameObject innerCylinder;
+    private GameObject midCylinder;
+
 
     private float initialRadius = 3f;
 
@@ -16,6 +18,7 @@ public class CreateCylinder : MonoBehaviour
     {
         CreateOuterCylinder();
         CreateInnerCylinder();
+        CreateMidCylinder(); // NEW
 
         RadiusControl radiusControl = outerCylinder.AddComponent<RadiusControl>();
         radiusControl.innerCylinder = innerCylinder;
@@ -65,6 +68,31 @@ public class CreateCylinder : MonoBehaviour
             innerCylinder.GetComponent<Renderer>().material.color = Color.black;
         }
     }
+    void CreateMidCylinder()
+    {
+        midCylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        Destroy(midCylinder.GetComponent<CapsuleCollider>());
+
+        MeshCollider meshCollider = midCylinder.AddComponent<MeshCollider>();
+        meshCollider.convex = true; // ✅ Required for ComputePenetration
+        meshCollider.isTrigger = false;
+
+        midCylinder.transform.SetParent(outerCylinder.transform);
+        midCylinder.transform.localPosition = Vector3.zero;
+        midCylinder.transform.localRotation = Quaternion.identity;
+
+        Vector3 outerScale = outerCylinder.transform.localScale;
+        float scaleReduction = 0.2f;
+        midCylinder.transform.localScale = new Vector3(
+            outerScale.x - scaleReduction,
+            outerScale.y,
+            outerScale.z - scaleReduction
+        );
+
+        midCylinder.name = "MidCylinder";
+        midCylinder.AddComponent<MidCylinderBreaker>();
+    }
+
 
     int zPositionDecider()
     {
